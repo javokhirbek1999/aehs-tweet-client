@@ -4,18 +4,24 @@ const isLocalhost = Boolean(
   window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
 );
 
+// In serviceWorkerRegistration.js
 export function register(config) {
-  // Make sure the app is served over HTTPS for production
-  if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
-    const swUrl = isLocalhost
-      ? `${process.env.PUBLIC_URL}/service-worker.js`
-      : `${process.env.PUBLIC_URL}/service-worker.js`; // This can stay the same for production (handled by CRA)
+  if ('serviceWorker' in navigator) {
+    const swUrl = `${window.location.origin}/service-worker.js`;
 
     window.addEventListener('load', () => {
-      registerValidSW(swUrl, config);
+      navigator.serviceWorker.register(swUrl).then((registration) => {
+        console.log('Service Worker registered with scope:', registration.scope);
+        if (config && config.onSuccess) {
+          config.onSuccess(registration);
+        }
+      }).catch((error) => {
+        console.error('Error during service worker registration:', error);
+      });
     });
   }
 }
+
 
 function registerValidSW(swUrl, config) {
   navigator.serviceWorker

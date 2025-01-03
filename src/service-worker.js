@@ -16,19 +16,24 @@ export const dbPromise = openDB('tweetDB', 1, {
 
 // Install event: Cache essential assets and handle initial setup
 self.addEventListener('install', (event) => {
+  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open('static-cache').then((cache) => {
+      console.log('Caching assets...');
       return cache.addAll([
-        './',
-        './index.html',
-        '/static/media/logo192.png',
-        '/static/media/logo512.png',
-        '/static/js/main.js',
-        '/static/css/main.css',
+        `${window.location.origin}/`,
+        `${window.location.origin}/index.html`,
+        `${window.location.origin}/static/media/logo192.png`,
+        `${window.location.origin}/static/media/logo512.png`,
+        `${window.location.origin}/static/js/main.js`,
+        `${window.location.origin}/static/css/main.css`,
       ]);
+    }).catch((error) => {
+      console.error('Failed to cache some resources:', error);
     })
   );
 });
+
 
 // Fetch event: Cache tweets and images in IndexedDB and serve when offline
 self.addEventListener('fetch', (event) => {
