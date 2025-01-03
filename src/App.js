@@ -51,16 +51,38 @@ function App() {
   };
 
   const fetchLocation = () => {
-    // Use ip-api to get the location by IP address
-    fetch('https://ip-api.com/json/')
+    // Use the Geolocation API to get current location
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Get coordinates (latitude, longitude)
+          const { latitude, longitude } = position.coords;
+          console.log('Latitude:', latitude, 'Longitude:', longitude);
+
+          // You can use a reverse geocoding service here to convert coordinates into a location.
+          // For example, you can use Nominatim API (OpenStreetMap).
+          reverseGeocode(latitude, longitude);
+        },
+        (error) => {
+          console.error('Error fetching location:', error);
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+    }
+  };
+
+  const reverseGeocode = (latitude, longitude) => {
+    // Use OpenStreetMap Nominatim API for reverse geocoding (free, no API key required)
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
       .then((response) => response.json())
       .then((data) => {
-        const country = data.country;
+        const country = data.address.country;
         setLocation(country); // Set location after fetching it
         saveLocationToCache(country); // Store location in cache (localStorage)
       })
       .catch((error) => {
-        console.error('Error fetching location:', error);
+        console.error('Error with reverse geocoding:', error);
       });
   };
 
