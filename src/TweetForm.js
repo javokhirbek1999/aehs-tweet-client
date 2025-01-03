@@ -3,7 +3,6 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, B
 import CloseIcon from '@mui/icons-material/Close';
 import WebcamCaptureModal from './WebcamCaptureModal';
 import { postTweet } from './api';
-import { storeUnsyncedTweet } from './service-worker'; // Import storeUnsyncedTweet from service-worker
 
 const TweetForm = ({ open, onClose }) => {
   const [tweetContent, setTweetContent] = useState('');
@@ -45,9 +44,9 @@ const TweetForm = ({ open, onClose }) => {
       onClose(); // Close modal after posting tweet
     } catch (error) {
       console.error('Error posting tweet:', error.response ? error.response.data : error);
+
       // Store tweet in IndexedDB when offline
       const tweet = { content: tweetContent, image: image || capturedImage };
-      await storeUnsyncedTweet(tweet);
       onClose(); // Close modal after storing tweet
     }
   };
