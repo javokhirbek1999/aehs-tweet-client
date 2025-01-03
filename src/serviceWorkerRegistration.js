@@ -1,14 +1,15 @@
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
-    window.location.hostname === '[::1]' ||
-    window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
+  window.location.hostname === '[::1]' ||
+  window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
 );
 
 export function register(config) {
-  if ('serviceWorker' in navigator) {
+  // Make sure the app is served over HTTPS for production
+  if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
     const swUrl = isLocalhost
-      ? `${process.env.PUBLIC_URL}/service-worker.js`  // Point to the service worker in the public folder
-      : `${process.env.PUBLIC_URL}/service-worker.js`; // Same for production (since CRA handles this)
+      ? `${process.env.PUBLIC_URL}/service-worker.js`
+      : `${process.env.PUBLIC_URL}/service-worker.js`; // This can stay the same for production (handled by CRA)
 
     window.addEventListener('load', () => {
       registerValidSW(swUrl, config);
