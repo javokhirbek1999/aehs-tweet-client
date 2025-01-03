@@ -23,10 +23,22 @@ const Login = ({ open, onClose, onLoginSuccess }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullScreen // Makes the dialog cover the whole screen
+      sx={{
+        '& .MuiDialog-paper': {
+          margin: 0, // Remove any default margin
+          width: '100%', // Make the dialog fill the screen
+          height: '100%', // Set height to 100% of the screen
+          maxWidth: 'none', // Remove max width limitation
+        },
+      }}
+    >
       <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold' }}>Login</DialogTitle>
-      <DialogContent>
-        <Box sx={{ marginBottom: 2 }}>
+      <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box sx={{ width: '80%', marginBottom: 2 }}>
           <TextField
             label="Username"
             variant="outlined"
@@ -35,7 +47,7 @@ const Login = ({ open, onClose, onLoginSuccess }) => {
             fullWidth
           />
         </Box>
-        <Box>
+        <Box sx={{ width: '80%', marginBottom: 2 }}>
           <TextField
             label="Password"
             variant="outlined"
@@ -46,7 +58,7 @@ const Login = ({ open, onClose, onLoginSuccess }) => {
           />
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ justifyContent: 'center' }}>
         <Button onClick={onClose} color="secondary">
           Cancel
         </Button>

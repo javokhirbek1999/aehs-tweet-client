@@ -9,6 +9,20 @@ const TweetList = () => {
   // Utility to check if the app is offline
   const isOffline = () => !navigator.onLine;
 
+  // Format the date to a readable format (e.g., "Jan 3, 2025, 10:30 AM")
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    })}`;
+  };
+
   useEffect(() => {
     const fetchTweets = async () => {
       if (isOffline()) {
@@ -48,22 +62,46 @@ const TweetList = () => {
     <Box sx={{ padding: 2, display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center' }}>
       {tweets.length > 0 ? (
         tweets.map((tweet) => (
-          <Card key={tweet.id} sx={{ width: '100%', maxWidth: '600px', height: 'auto', borderRadius: 8 }}>
+          <Card key={tweet.id} sx={{ width: '100%', maxWidth: '600px', height: 'auto', borderRadius: 8, boxShadow: 3, marginBottom: 2 }}>
             {tweet.image && (
               <CardMedia
                 component="img"
                 image={tweet.image}
                 alt="Tweet image"
-                sx={{ width: '100%', height: '300px', objectFit: 'cover' }}
+                sx={{
+                  width: '100%',
+                  height: '300px',
+                  objectFit: 'cover',
+                  borderTopLeftRadius: 8,
+                  borderTopRightRadius: 8,
+                  marginBottom: 2,
+                }}
               />
             )}
             <CardContent>
-              <Typography variant="body1">{tweet.content}</Typography>
+              {/* Tweet date */}
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
+                  {formatDate(tweet.created_at)}
+                </Typography>
+              </Box>
+
+              {/* Tweet content */}
+              <Typography variant="body1" sx={{ marginBottom: 2, lineHeight: 1.6, fontSize: '1rem', color: 'text.primary' }}>
+                {tweet.content}
+              </Typography>
+
+              {/* Tweet username */}
+              <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'primary.main', fontSize: '1rem' }}>
+                @{tweet.user.username}
+              </Typography>
             </CardContent>
           </Card>
         ))
       ) : (
-        <Typography variant="body1">{!navigator.onLine ? 'No internet connection' : 'No Tweets Available'}</Typography>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          {!navigator.onLine ? 'No internet connection' : 'No Tweets Available'}
+        </Typography>
       )}
     </Box>
   );

@@ -45,10 +45,22 @@ const Register = ({ open, onClose }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullScreen // Makes the dialog cover the whole screen
+      sx={{
+        '& .MuiDialog-paper': {
+          margin: 0, // Remove any default margin
+          width: '100%', // Make the dialog fill the screen
+          height: '100%', // Set height to 100% of the screen
+          maxWidth: 'none', // Remove max width limitation
+        },
+      }}
+    >
       <DialogTitle sx={{ textAlign: 'center' }}>Register</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Box sx={{ width: '100%', marginBottom: 2 }}>
+        <Box sx={{ width: '80%', marginBottom: 2 }}>
           <TextField
             label="Username"
             value={username}
@@ -58,7 +70,7 @@ const Register = ({ open, onClose }) => {
             sx={{ marginBottom: 2 }}
           />
         </Box>
-        <Box sx={{ width: '100%', marginBottom: 2 }}>
+        <Box sx={{ width: '80%', marginBottom: 2 }}>
           <TextField
             label="Password"
             type="password"

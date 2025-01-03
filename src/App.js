@@ -11,6 +11,7 @@ function App() {
   const [isTweetOpen, setTweetOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -23,12 +24,45 @@ function App() {
     window.addEventListener('online', handleOnlineStatus);
     window.addEventListener('offline', handleOnlineStatus);
 
+    // Try to retrieve location from cache
+    getLocationFromCache();
+
+    // Fetch the location if needed
+    if (navigator.onLine && !location) {
+      fetchLocation();
+    }
+
     // Cleanup event listeners on unmount
     return () => {
       window.removeEventListener('online', handleOnlineStatus);
       window.removeEventListener('offline', handleOnlineStatus);
     };
   }, []);
+
+  const getLocationFromCache = () => {
+    const cachedLocation = localStorage.getItem('location');
+    if (cachedLocation) {
+      setLocation(JSON.parse(cachedLocation).country);
+    }
+  };
+
+  const saveLocationToCache = (location) => {
+    localStorage.setItem('location', JSON.stringify({ country: location }));
+  };
+
+  const fetchLocation = () => {
+    // Use ip-api to get the location by IP address
+    fetch('http://ip-api.com/json/')
+      .then((response) => response.json())
+      .then((data) => {
+        const country = data.country;
+        setLocation(country); // Set location after fetching it
+        saveLocationToCache(country); // Store location in cache (localStorage)
+      })
+      .catch((error) => {
+        console.error('Error fetching location:', error);
+      });
+  };
 
   const handleLoginSuccess = (token) => {
     localStorage.setItem('token', token);
@@ -49,7 +83,9 @@ function App() {
           color={isOnline ? 'green' : 'red'}
           sx={{ fontWeight: 'bold' }}
         >
-          {isOnline ? 'You are Online' : 'You are Offline'}
+          {isOnline
+            ? `You are Online${location ? ` in ${location}` : ''}`
+            : 'You are Offline'}
         </Typography>
       </Box>
 
