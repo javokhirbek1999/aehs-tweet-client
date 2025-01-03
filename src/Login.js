@@ -7,10 +7,16 @@ const Login = ({ open, onClose, onLoginSuccess }) => {
   const [password, setPassword] = useState('');
 
   const handleSubmit = async () => {
+    // Check if the user is offline
+    if (!navigator.onLine) {
+      alert('You are offline, make sure you have an internet connection.');
+      return;
+    }
+
     try {
       const response = await loginUser(username, password);
       const token = response.access; // Assuming the JWT token is in `access` field
-      onLoginSuccess(token); 
+      onLoginSuccess(token);
     } catch (error) {
       console.error('Error logging in:', error);
     }

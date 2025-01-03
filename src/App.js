@@ -10,11 +10,24 @@ function App() {
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isTweetOpen, setTweetOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
 
+    // Online/offline status handler
+    const handleOnlineStatus = () => setIsOnline(navigator.onLine);
+
+    // Add event listeners
+    window.addEventListener('online', handleOnlineStatus);
+    window.addEventListener('offline', handleOnlineStatus);
+
+    // Cleanup event listeners on unmount
+    return () => {
+      window.removeEventListener('online', handleOnlineStatus);
+      window.removeEventListener('offline', handleOnlineStatus);
+    };
   }, []);
 
   const handleLoginSuccess = (token) => {
@@ -30,6 +43,16 @@ function App() {
 
   return (
     <Container sx={{ paddingTop: 4, paddingBottom: 4 }}>
+      <Box sx={{ textAlign: 'center', marginBottom: 2 }}>
+        <Typography
+          variant="subtitle1"
+          color={isOnline ? 'green' : 'red'}
+          sx={{ fontWeight: 'bold' }}
+        >
+          {isOnline ? 'You are Online' : 'You are Offline'}
+        </Typography>
+      </Box>
+
       <Box sx={{ textAlign: 'center', marginBottom: 3 }}>
         <Typography variant="h3" color="primary" sx={{ fontWeight: 'bold' }}>
           Welcome to UEHSTweet
@@ -89,7 +112,11 @@ function App() {
       <TweetList />
 
       <Register open={isRegisterOpen} onClose={() => setRegisterOpen(false)} />
-      <Login open={isLoginOpen} onClose={() => setLoginOpen(false)} onLoginSuccess={handleLoginSuccess} />
+      <Login
+        open={isLoginOpen}
+        onClose={() => setLoginOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
       <TweetForm open={isTweetOpen} onClose={() => setTweetOpen(false)} />
     </Container>
   );

@@ -63,7 +63,7 @@ const TweetList = () => {
           </Card>
         ))
       ) : (
-        <Typography variant="body1">No tweets available</Typography>
+        <Typography variant="body1">{!navigator.onLine ? 'No internet connection' : 'No Tweets Available'}</Typography>
       )}
     </Box>
   );
