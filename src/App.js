@@ -52,7 +52,7 @@ function App() {
 
   const fetchLocation = () => {
     // Use ip-api to get the location by IP address
-    fetch('http://ip-api.com/json/')
+    fetch('https://ip-api.com/json/')
       .then((response) => response.json())
       .then((data) => {
         const country = data.country;
